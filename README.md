@@ -431,11 +431,10 @@ For questions or support, please open an issue on GitHub.
 ## 📸 Screenshots
 
 ### Dashboard View
-![Dashboard](/Users/bimlesh/.gemini/antigravity/brain/52c05555-1c1d-4b45-b312-caa11ad8d649/dashboard_view_1765988672141.png)
+![Dashboard](public/screenshots/dashboard.png)
 
 ### Discovered RFPs
-![Discovered RFPs](/Users/bimlesh/.gemini/antigravity/brain/52c05555-1c1d-4b45-b312-caa11ad8d649/discovered_rfps_view_1765988679759.png)
+![Discovered RFPs](public/screenshots/discovered-rfps.png)
 
 ### Process RFP
-![Process RFP](/Users/bimlesh/.gemini/antigravity/brain/52c05555-1c1d-4b45-b312-caa11ad8d649/process_rfp_view_1765988687972.png)
-# rfp-x
+![Process RFP](public/screenshots/process-rfp.png)
