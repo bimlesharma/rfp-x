@@ -49,11 +49,11 @@ export default function BusinessImpactDashboard({
     ).length;
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
             {/* Header */}
             <div>
-                <h2 className="text-2xl font-bold text-gray-900">Business Impact Dashboard</h2>
-                <p className="text-gray-600 mt-1">
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Business Impact Dashboard</h2>
+                <p className="text-sm sm:text-base text-gray-600 mt-1">
                     Real-time insights into RFP pipeline and response readiness
                 </p>
             </div>
@@ -99,8 +99,8 @@ export default function BusinessImpactDashboard({
 
             {/* Match Score Distribution */}
             {responses.length > 0 && (
-                <div className="bg-white rounded-lg border border-gray-200 p-6">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                <div className="bg-white rounded-lg border border-gray-200 p-4 sm:p-6">
+                    <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4">
                         Specification Match Distribution
                     </h3>
                     <MatchScoreChart responses={responses} />
@@ -109,8 +109,8 @@ export default function BusinessImpactDashboard({
 
             {/* Pricing Breakdown */}
             {responses.length > 0 && (
-                <div className="bg-white rounded-lg border border-gray-200 p-6">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                <div className="bg-white rounded-lg border border-gray-200 p-4 sm:p-6">
+                    <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4">
                         Pricing Breakdown by RFP
                     </h3>
                     <PricingBreakdownTable responses={responses} />
@@ -119,9 +119,9 @@ export default function BusinessImpactDashboard({
 
             {/* Upcoming Deadlines */}
             {discoveredRFPs.length > 0 && (
-                <div className="bg-white rounded-lg border border-gray-200 p-6">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                        <Calendar className="w-5 h-5" />
+                <div className="bg-white rounded-lg border border-gray-200 p-4 sm:p-6">
+                    <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                        <Calendar className="w-4 h-4 sm:w-5 sm:h-5" />
                         Upcoming RFP Deadlines
                     </h3>
                     <DeadlineTimeline rfps={discoveredRFPs} />
@@ -154,15 +154,15 @@ function MetricCard({
     };
 
     return (
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
-            <div className="flex items-center gap-3 mb-3">
+        <div className="bg-white rounded-lg border border-gray-200 p-4 sm:p-6">
+            <div className="flex items-center gap-2 sm:gap-3 mb-3">
                 <div className={`p-2 rounded-lg ${colorClasses[color as keyof typeof colorClasses]}`}>
                     {icon}
                 </div>
-                <span className="text-sm font-medium text-gray-600">{label}</span>
+                <span className="text-xs sm:text-sm font-medium text-gray-600">{label}</span>
             </div>
-            <div className="text-3xl font-bold text-gray-900 mb-1">{value}</div>
-            <div className="text-sm text-gray-500">{subtitle}</div>
+            <div className="text-2xl sm:text-3xl font-bold text-gray-900 mb-1">{value}</div>
+            <div className="text-xs sm:text-sm text-gray-500">{subtitle}</div>
         </div>
     );
 }
@@ -212,7 +212,7 @@ function MatchScoreChart({ responses }: { responses: FinalRFPResponse[] }) {
 // Pricing Breakdown Table
 function PricingBreakdownTable({ responses }: { responses: FinalRFPResponse[] }) {
     return (
-        <div className="overflow-x-auto">
+        <div className="table-scroll-wrapper">
             <table className="w-full">
                 <thead>
                     <tr className="border-b border-gray-200">

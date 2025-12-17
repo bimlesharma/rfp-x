@@ -16,25 +16,25 @@ export default function DiscoveredRFPsDisplay({
     const discoveredRFPs = rfps.filter((r) => r.status === "discovered");
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
             {/* Header */}
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div>
-                    <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-                        <Search className="w-6 h-6 text-purple-600" />
+                    <h2 className="text-xl sm:text-2xl font-bold text-gray-900 flex items-center gap-2">
+                        <Search className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600" />
                         Discovered RFPs
                     </h2>
-                    <p className="text-gray-600 mt-1">
+                    <p className="text-sm sm:text-base text-gray-600 mt-1">
                         Autonomous monitoring of {rfps.length} RFPs from multiple sources
                     </p>
                 </div>
-                <div className="flex gap-3">
-                    <div className="text-center px-4 py-2 bg-green-50 rounded-lg border border-green-200">
-                        <div className="text-2xl font-bold text-green-600">{qualifiedRFPs.length}</div>
+                <div className="flex gap-2 sm:gap-3 w-full sm:w-auto">
+                    <div className="flex-1 sm:flex-none text-center px-3 sm:px-4 py-2 bg-green-50 rounded-lg border border-green-200">
+                        <div className="text-xl sm:text-2xl font-bold text-green-600">{qualifiedRFPs.length}</div>
                         <div className="text-xs text-green-700">Qualified</div>
                     </div>
-                    <div className="text-center px-4 py-2 bg-gray-50 rounded-lg border border-gray-200">
-                        <div className="text-2xl font-bold text-gray-600">{discoveredRFPs.length}</div>
+                    <div className="flex-1 sm:flex-none text-center px-3 sm:px-4 py-2 bg-gray-50 rounded-lg border border-gray-200">
+                        <div className="text-xl sm:text-2xl font-bold text-gray-600">{discoveredRFPs.length}</div>
                         <div className="text-xs text-gray-700">Under Review</div>
                     </div>
                 </div>
@@ -76,8 +76,8 @@ function RFPCard({
     return (
         <div
             className={`bg-white rounded-lg border-2 p-5 transition-all hover:shadow-lg ${rfp.status === "qualified"
-                    ? "border-green-200 hover:border-green-300"
-                    : "border-gray-200 hover:border-gray-300"
+                ? "border-green-200 hover:border-green-300"
+                : "border-gray-200 hover:border-gray-300"
                 }`}
         >
             {/* Header */}
@@ -96,7 +96,7 @@ function RFPCard({
             </div>
 
             {/* Metrics Row */}
-            <div className="grid grid-cols-3 gap-3 mb-4">
+            <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-4">
                 {/* Relevance Score */}
                 <div className="text-center p-2 bg-gray-50 rounded">
                     <div className="flex items-center justify-center gap-1 mb-1">
@@ -155,14 +155,14 @@ function RFPCard({
             </div>
 
             {/* Footer */}
-            <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-0 pt-3 border-t border-gray-100">
                 <div className="text-xs text-gray-500">
                     Discovered: {new Date(rfp.discoveredDate).toLocaleDateString()}
                 </div>
                 {onSelect && (
                     <button
                         onClick={() => onSelect(rfp)}
-                        className="px-3 py-1.5 bg-purple-600 text-white text-sm font-medium rounded hover:bg-purple-700 transition-colors"
+                        className="w-full sm:w-auto px-3 py-1.5 bg-purple-600 text-white text-sm font-medium rounded hover:bg-purple-700 transition-colors"
                     >
                         Process RFP
                     </button>

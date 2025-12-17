@@ -213,66 +213,68 @@ export default function RFPResponseDisplay({ response, onReset }: RFPResponseDis
     };
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
             {/* Header */}
-            <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
-                <div className="flex items-start justify-between">
+            <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-4 sm:p-6">
+                <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
                     <div>
-                        <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                        <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
                             RFP Response Generated
                         </h2>
-                        <p className="text-gray-600">
+                        <p className="text-sm sm:text-base text-gray-600">
                             {response.rfpSummary.rfpName}
                         </p>
-                        <p className="text-sm text-gray-500 mt-1">
+                        <p className="text-xs sm:text-sm text-gray-500 mt-1">
                             Due: {formatDate(response.rfpSummary.dueDate)}
                         </p>
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
                         <button
                             onClick={handleExportJSON}
-                            className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors flex items-center gap-2"
+                            className="px-3 sm:px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors flex items-center justify-center gap-2 text-sm"
                         >
                             <Download className="w-4 h-4" />
                             JSON
                         </button>
                         <button
                             onClick={handleExportExcel}
-                            className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2"
+                            className="px-3 sm:px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center gap-2 text-sm"
                         >
                             <Download className="w-4 h-4" />
                             Excel
                         </button>
                         <button
                             onClick={handleExportProposal}
-                            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
+                            className="px-3 sm:px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 text-sm"
                         >
                             <FileText className="w-4 h-4" />
-                            PDF Proposal
+                            <span className="hidden sm:inline">PDF Proposal</span>
+                            <span className="sm:hidden">PDF</span>
                         </button>
                         <button
                             onClick={onReset}
-                            className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors flex items-center gap-2"
+                            className="px-3 sm:px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors flex items-center justify-center gap-2 text-sm"
                         >
                             <RotateCcw className="w-4 h-4" />
-                            New RFP
+                            <span className="hidden sm:inline">New RFP</span>
+                            <span className="sm:hidden">New</span>
                         </button>
                     </div>
                 </div>
             </div>
 
             {/* Total Bid Value */}
-            <div className="bg-gradient-to-r from-purple-600 to-violet-600 rounded-xl shadow-lg p-8 text-white">
-                <p className="text-purple-100 text-sm font-medium mb-2">Total Bid Value</p>
-                <p className="text-4xl font-bold">{formatCurrency(response.totalBidValue)}</p>
+            <div className="bg-gradient-to-r from-purple-600 to-violet-600 rounded-xl shadow-lg p-6 sm:p-8 text-white">
+                <p className="text-purple-100 text-xs sm:text-sm font-medium mb-2">Total Bid Value</p>
+                <p className="text-3xl sm:text-4xl font-bold">{formatCurrency(response.totalBidValue)}</p>
             </div>
 
             {/* Technical Matches */}
-            <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-4">
+            <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-4 sm:p-6">
+                <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-4">
                     Technical Specification Matches
                 </h3>
-                <div className="space-y-6">
+                <div className="space-y-4 sm:space-y-6">
                     {response.technicalMatches.map((match, idx) => (
                         <div key={idx} className="border border-gray-200 rounded-lg overflow-hidden">
                             <div className="bg-gray-50 px-4 py-3 border-b">
@@ -311,8 +313,8 @@ export default function RFPResponseDisplay({ response, onReset }: RFPResponseDis
                                             </div>
 
                                             {/* Comparison Table */}
-                                            <div className="mt-3 overflow-x-auto">
-                                                <table className="w-full text-sm">
+                                            <div className="mt-3 table-scroll-wrapper">
+                                                <table className="w-full text-xs sm:text-sm">
                                                     <thead>
                                                         <tr className="border-b">
                                                             <th className="text-left py-2 px-2 font-medium text-gray-700">Parameter</th>
@@ -357,8 +359,8 @@ export default function RFPResponseDisplay({ response, onReset }: RFPResponseDis
             </div>
 
             {/* Pricing Breakdown */}
-            <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-4">
+            <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-4 sm:p-6">
+                <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-4">
                     Pricing Breakdown
                 </h3>
                 <div className="space-y-4">
@@ -374,7 +376,7 @@ export default function RFPResponseDisplay({ response, onReset }: RFPResponseDis
                                 </p>
                             </div>
 
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                            <div className="grid grid-cols-2 gap-3 sm:gap-4 text-xs sm:text-sm">
                                 <div>
                                     <p className="text-gray-600">Quantity</p>
                                     <p className="font-semibold text-gray-900">{item.quantity}</p>
