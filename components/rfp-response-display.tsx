@@ -1,9 +1,10 @@
 "use client";
 
-import { Check, X, Download, RotateCcw } from "lucide-react";
+import { Check, X, Download, RotateCcw, FileText } from "lucide-react";
 import { FinalRFPResponse } from "@/lib/schemas/rfp-schemas";
 import { formatCurrency, formatDate, getMatchQuality } from "@/lib/utils";
 import { showSuccess, showError } from "@/lib/utils/toast";
+import { generateProposalPDF } from "@/lib/utils/pdf-proposal-generator";
 import * as XLSX from "xlsx";
 
 interface RFPResponseDisplayProps {
@@ -201,6 +202,16 @@ export default function RFPResponseDisplay({ response, onReset }: RFPResponseDis
         }
     };
 
+    const handleExportProposal = async () => {
+        try {
+            await generateProposalPDF(response);
+            showSuccess("Professional proposal PDF generated successfully");
+        } catch (error) {
+            console.error("Error generating proposal PDF:", error);
+            showError("Failed to generate proposal PDF", "Please try again");
+        }
+    };
+
     return (
         <div className="space-y-6">
             {/* Header */}
@@ -231,6 +242,13 @@ export default function RFPResponseDisplay({ response, onReset }: RFPResponseDis
                         >
                             <Download className="w-4 h-4" />
                             Excel
+                        </button>
+                        <button
+                            onClick={handleExportProposal}
+                            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
+                        >
+                            <FileText className="w-4 h-4" />
+                            PDF Proposal
                         </button>
                         <button
                             onClick={onReset}

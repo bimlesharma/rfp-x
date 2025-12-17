@@ -26,7 +26,7 @@ export const showError = (message: string, details?: string) => {
 
     toast.error(content, {
         duration: 5000,
-        position: "top-right",
+        position: "bottom-center",
         style: {
             background: "#ef4444",
             color: "#fff",
@@ -38,7 +38,7 @@ export const showError = (message: string, details?: string) => {
 export const showInfo = (message: string) => {
     toast(message, {
         duration: 3000,
-        position: "top-right",
+        position: "bottom-center",
         icon: "ℹ️",
         style: {
             background: "#3b82f6",
@@ -50,7 +50,7 @@ export const showInfo = (message: string) => {
 
 export const showLoading = (message: string) => {
     return toast.loading(message, {
-        position: "top-right",
+        position: "bottom-center",
         style: {
             background: "#8b5cf6",
             color: "#fff",
@@ -79,7 +79,7 @@ export const showPromise = <T,>(
             error: messages.error,
         },
         {
-            position: "top-right",
+            position: "bottom-center",
             style: {
                 fontWeight: "500",
             },
