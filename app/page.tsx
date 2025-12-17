@@ -1,65 +1,271 @@
-import Image from "next/image";
+"use client";
+
+import { useState, useEffect } from "react";
+import { FileText, Sparkles, LayoutDashboard } from "lucide-react";
+import { Toaster } from "react-hot-toast";
+import { showSuccess, showError, showLoading, dismissToast } from "@/lib/utils/toast";
+import { FinalRFPResponse } from "@/lib/schemas/rfp-schemas";
+import { DiscoveredRFP, RFPDiscoveryAgent } from "@/lib/services/rfp-discovery-service";
+import RFPInputForm from "@/components/rfp-input-form";
+import AgentWorkflowVisualizer from "@/components/agent-workflow-visualizer";
+import RFPResponseDisplay from "@/components/rfp-response-display";
+import BusinessImpactDashboard from "@/components/dashboard/business-impact-dashboard";
+import DiscoveredRFPsDisplay from "@/components/dashboard/discovered-rfps-display";
+
+type ViewMode = "input" | "dashboard" | "discovery";
 
 export default function Home() {
+  const [viewMode, setViewMode] = useState<ViewMode>("dashboard");
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [currentStep, setCurrentStep] = useState<string>("");
+  const [result, setResult] = useState<FinalRFPResponse | null>(null);
+  const [processedRFPs, setProcessedRFPs] = useState<FinalRFPResponse[]>([]);
+  const [discoveredRFPs, setDiscoveredRFPs] = useState<DiscoveredRFP[]>([]);
+  const [isLoadingDiscovery, setIsLoadingDiscovery] = useState(true);
+  const [error, setError] = useState<string>("");
+
+  // Load discovered RFPs on mount
+  useEffect(() => {
+    const loadDiscoveredRFPs = async () => {
+      setIsLoadingDiscovery(true);
+      try {
+        const discoveryAgent = new RFPDiscoveryAgent();
+        const rfps = await discoveryAgent.getActionableRFPs();
+        setDiscoveredRFPs(rfps);
+        showSuccess(`Discovered ${rfps.length} RFPs from multiple sources`);
+      } catch (error) {
+        console.error("Failed to load discovered RFPs:", error);
+        showError("Failed to load discovered RFPs", "Using cached data");
+        // Set empty array as fallback
+        setDiscoveredRFPs([]);
+      } finally {
+        setIsLoadingDiscovery(false);
+      }
+    };
+    loadDiscoveredRFPs();
+  }, []);
+
+  const handleProcessRFP = async (rfpText: string) => {
+    setIsProcessing(true);
+    setError("");
+    setResult(null);
+    setCurrentStep("sales");
+    setViewMode("input"); // Switch to input view to show progress
+
+    const loadingToast = showLoading("Processing RFP with AI agents...");
+
+    try {
+      const response = await fetch("/api/process-rfp", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ rfpText }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to process RFP");
+      }
+
+      // Simulate progress steps for visualization
+      setCurrentStep("technical");
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
+      setCurrentStep("pricing");
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
+      setCurrentStep("completed");
+      setResult(data.result);
+
+      // Add to processed RFPs
+      setProcessedRFPs((prev) => [...prev, data.result]);
+
+      dismissToast(loadingToast);
+      showSuccess("RFP response generated successfully!");
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "An error occurred";
+      setError(errorMessage);
+      setCurrentStep("error");
+      dismissToast(loadingToast);
+      showError("Failed to process RFP", errorMessage);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const handleSelectDiscoveredRFP = (rfp: DiscoveredRFP) => {
+    // Create a mock RFP text from discovered RFP
+    const mockRFPText = `
+RFP Name: ${rfp.rfpName}
+Due Date: ${rfp.dueDate}
+Source: ${rfp.source}
+
+Products Required:
+${rfp.products.map((p, i) => `${i + 1}. ${p}`).join("\n")}
+
+Estimated Value: ₹${rfp.estimatedValue.toLocaleString("en-IN")}
+
+Please provide technical specifications and pricing for the above products.
+    `.trim();
+
+    showSuccess(`Processing RFP: ${rfp.rfpName}`);
+    setViewMode("input");
+    // You would typically populate the form here
+    // For now, we'll just process it directly
+    handleProcessRFP(mockRFPText);
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-violet-50">
+      {/* Toast Notifications */}
+      <Toaster />
+
+      {/* Header */}
+      <header className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-10">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-lg gradient-purple flex items-center justify-center">
+                <Sparkles className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900">RFP-X</h1>
+                <p className="text-sm text-gray-600">AI-Powered RFP Response Automation</p>
+              </div>
+            </div>
+
+            {/* Navigation */}
+            <nav className="flex gap-2">
+              <button
+                onClick={() => setViewMode("dashboard")}
+                className={`px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2 ${viewMode === "dashboard"
+                  ? "bg-purple-600 text-white"
+                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  }`}
+              >
+                <LayoutDashboard className="w-4 h-4" />
+                Dashboard
+              </button>
+              <button
+                onClick={() => setViewMode("discovery")}
+                className={`px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2 ${viewMode === "discovery"
+                  ? "bg-purple-600 text-white"
+                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  }`}
+              >
+                <FileText className="w-4 h-4" />
+                Discovered RFPs
+              </button>
+              <button
+                onClick={() => setViewMode("input")}
+                className={`px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2 ${viewMode === "input"
+                  ? "bg-purple-600 text-white"
+                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  }`}
+              >
+                <Sparkles className="w-4 h-4" />
+                Process RFP
+              </button>
+            </nav>
+          </div>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="container mx-auto px-4 py-8 max-w-7xl">
+        {/* Dashboard View */}
+        {viewMode === "dashboard" && (
+          <BusinessImpactDashboard
+            responses={processedRFPs}
+            discoveredRFPs={discoveredRFPs}
+          />
+        )}
+
+        {/* Discovery View */}
+        {viewMode === "discovery" && (
+          <DiscoveredRFPsDisplay
+            rfps={discoveredRFPs}
+            onSelectRFP={handleSelectDiscoveredRFP}
+          />
+        )}
+
+        {/* Input/Processing View */}
+        {viewMode === "input" && (
+          <>
+            {/* Hero Section */}
+            {!result && !isProcessing && (
+              <div className="text-center mb-12">
+                <h2 className="text-4xl font-bold text-gray-900 mb-4">
+                  Automate Your RFP Response Workflow
+                </h2>
+                <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                  Multi-agent AI system that analyzes RFPs, matches specifications, and generates
+                  pricing—all in seconds.
+                </p>
+              </div>
+            )}
+
+            {/* RFP Input Form */}
+            {!result && !isProcessing && (
+              <div className="mb-8">
+                <RFPInputForm onSubmit={handleProcessRFP} />
+              </div>
+            )}
+
+            {/* Workflow Visualization */}
+            {isProcessing && (
+              <div className="mb-8">
+                <AgentWorkflowVisualizer currentStep={currentStep} />
+              </div>
+            )}
+
+            {/* Error Display */}
+            {error && (
+              <div className="mb-8 p-6 bg-red-50 border border-red-200 rounded-lg">
+                <h3 className="text-lg font-semibold text-red-900 mb-2">Error Processing RFP</h3>
+                <p className="text-red-700">{error}</p>
+                <button
+                  onClick={() => {
+                    setError("");
+                    setCurrentStep("");
+                  }}
+                  className="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                >
+                  Try Again
+                </button>
+              </div>
+            )}
+
+            {/* Results Display */}
+            {result && (
+              <div>
+                <RFPResponseDisplay
+                  response={result}
+                  onReset={() => {
+                    setResult(null);
+                    setCurrentStep("");
+                    setViewMode("dashboard");
+                  }}
+                />
+              </div>
+            )}
+          </>
+        )}
+      </main>
+
+      {/* Footer */}
+      <footer className="border-t bg-white/80 backdrop-blur-sm mt-16">
+        <div className="container mx-auto px-4 py-6 text-center text-gray-600">
+          <p className="text-sm">
+            RFP-X • Agentic AI-Driven B2B RFP Response Automation System
+          </p>
+          <p className="text-xs mt-1 text-gray-500">
+            {processedRFPs.length} RFPs Processed • {discoveredRFPs.length} RFPs Discovered
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+      </footer>
     </div>
   );
 }
