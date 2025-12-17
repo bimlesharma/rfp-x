@@ -1,5 +1,18 @@
 # RFP-X: Agentic AI-Driven B2B RFP Response Automation System
 
+## 🏆 EY Techathon 6.0 Submission
+
+**Problem Statement:** IV - FMCG  
+**Team Name:** Brahma Bytes
+
+### 👥 Team Members
+- **Gungun Pathak** - Team Leader
+- **Kavyanshi Gera**
+- **Bimlesh**
+- **Avnish Kumar**
+
+---
+
 ![RFP-X](https://img.shields.io/badge/AI-Powered-purple?style=for-the-badge)
 ![Next.js](https://img.shields.io/badge/Next.js-14-black?style=for-the-badge&logo=next.js)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?style=for-the-badge&logo=typescript)
