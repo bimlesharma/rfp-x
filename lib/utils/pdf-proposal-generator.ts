@@ -212,7 +212,7 @@ export async function generateProposalPDF(
                 row.parameter,
                 row.rfpValue,
                 row.oemValue,
-                row.matches ? "✓" : "✗",
+                row.matches ? "YES" : "NO",
             ]),
             theme: "grid",
             headStyles: {
@@ -228,6 +228,19 @@ export async function generateProposalPDF(
                 fillColor: [250, 250, 250],
             },
             margin: { left: margin, right: margin },
+            didParseCell: function (data) {
+                // Color code the Match column (index 3)
+                if (data.column.index === 3 && data.section === "body") {
+                    const cellValue = data.cell.text[0];
+                    if (cellValue === "YES") {
+                        data.cell.styles.textColor = [22, 163, 74]; // Green
+                        data.cell.styles.fontStyle = "bold";
+                    } else if (cellValue === "NO") {
+                        data.cell.styles.textColor = [220, 38, 38]; // Red
+                        data.cell.styles.fontStyle = "bold";
+                    }
+                }
+            },
         });
 
         yPosition = (doc as any).lastAutoTable.finalY + 10;
