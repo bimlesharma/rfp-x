@@ -434,7 +434,7 @@ For questions or support, please open an issue on GitHub.
 ![Dashboard](public/screenshots/dashboard.png)
 
 ### Discovered RFPs
-![Discovered RFPs](public/screenshots/discovered-rfps.png)
+![Discovered RFPs](public/screenshots/discover-rfps.png)
 
 ### Process RFP
 ![Process RFP](public/screenshots/process-rfp.png)
